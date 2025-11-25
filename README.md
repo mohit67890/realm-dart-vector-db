@@ -222,6 +222,32 @@ realm.write(() {
 - Always create a defensive copy with `List<double>.from()` before modifying
 - This pattern avoids data loss unlike `shouldDeleteIfMigrationNeeded: true`
 
+### Performance Benchmarks
+
+Benchmark results with 100 queries (1024-dimensional embeddings):
+
+| Metric | Performance |
+|--------|-------------|
+| **Bulk Insert** | 0.90ms per record |
+| **Index Creation** | 125ms (m=16, efConstruction=200) |
+| **KNN Search (Cold Start)** | 2,016μs |
+| **KNN Search (Warm)** | ~102μs (**9,766 searches/sec**) |
+| **Radius Search** | 104-959μs |
+| **Filtered Search** | 162-629μs |
+| **Memory Overhead** | ~100% (index size ≈ data size) |
+
+**Distance Metrics Comparison** (all perform similarly):
+- Cosine: 190ms index creation, 155μs search
+- Euclidean: 183ms index creation, 152μs search  
+- Dot Product: 178ms index creation, 157μs search
+
+**Parameter Tuning Impact**:
+- m=8, efConstruction=100: 118μs search
+- m=16, efConstruction=200: 112μs search
+- m=32, efConstruction=400: 104μs search (fastest)
+
+*Higher HNSW parameters yield better search performance at the cost of slightly larger index size and longer index creation time.*
+
 ### Use Cases
 
 * **Semantic Search**: Find documents by meaning, not just keywords
@@ -231,7 +257,7 @@ realm.write(() {
 * **Duplicate Detection**: Find near-duplicate content
 * **Clustering & Classification**: Group similar items together
 
-For a complete example with 26 comprehensive tests, see [example/lib/main.dart](./example/lib/main.dart).
+For a complete example with 26 comprehensive tests, see the realm package's [example/lib/main.dart](../realm/example/lib/main.dart). Performance benchmarks are available in the test suite.
 
 ## Samples
 
