@@ -7,7 +7,7 @@ import 'dart:math';
 import 'package:realm_common/realm_common.dart';
 import 'package:test/test.dart' hide test, throws;
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 import 'test.dart';
 
 part 'geospatial_test.realm.dart';

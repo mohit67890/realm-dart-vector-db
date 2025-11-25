@@ -6,9 +6,9 @@ import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:path/path.dart' as p;
-import 'package:realm_dart/realm.dart';
-import 'package:realm_dart/src/configuration.dart';
-import 'package:realm_dart/src/handles/realm_core.dart';
+import 'package:realm_dart_vector_db/realm.dart';
+import 'package:realm_dart_vector_db/src/configuration.dart';
+import 'package:realm_dart_vector_db/src/handles/realm_core.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 

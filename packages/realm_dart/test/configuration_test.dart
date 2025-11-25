@@ -4,7 +4,7 @@
 import 'dart:math';
 
 import 'package:path/path.dart' as path;
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 
 import 'test.dart';
 import 'utils/platform_util.dart';

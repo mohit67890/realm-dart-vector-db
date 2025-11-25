@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:test/test.dart' hide test, throws;
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 import 'test.dart';
 
 void main() {

@@ -5,11 +5,11 @@
 
 import 'dart:async';
 import 'package:test/test.dart' hide test, throws;
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 import 'test.dart';
-import 'package:realm_dart/src/results.dart';
-import 'package:realm_dart/src/realm_object.dart';
-import 'package:realm_dart/src/list.dart';
+import 'package:realm_dart_vector_db/src/results.dart';
+import 'package:realm_dart_vector_db/src/realm_object.dart';
+import 'package:realm_dart_vector_db/src/list.dart';
 
 part 'migration_test.realm.dart';
 

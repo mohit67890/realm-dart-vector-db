@@ -6,7 +6,7 @@
 import 'dart:typed_data';
 import 'package:test/test.dart' hide test, throws;
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 import 'test.dart';
 
 part 'results_test.realm.dart';

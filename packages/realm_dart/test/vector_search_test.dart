@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'dart:math';
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm_dart_vector_db.dart';
 import 'test.dart';
 
 part 'vector_search_test.realm.dart';

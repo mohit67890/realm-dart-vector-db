@@ -5,9 +5,9 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:realm_dart/realm.dart';
-import 'package:realm_dart/src/handles/realm_core.dart';
-import 'package:realm_dart/src/subscription.dart';
+import 'package:realm_dart_vector_db/realm.dart';
+import 'package:realm_dart_vector_db/src/handles/realm_core.dart';
+import 'package:realm_dart_vector_db/src/subscription.dart';
 
 import 'test.dart';
 import 'utils/platform_util.dart';

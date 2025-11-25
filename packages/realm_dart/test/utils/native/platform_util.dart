@@ -4,7 +4,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 
 import '../platform_util.dart' as intf;
 

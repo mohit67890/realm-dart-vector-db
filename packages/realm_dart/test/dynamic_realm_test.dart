@@ -5,7 +5,7 @@
 
 import 'package:collection/collection.dart';
 import 'dart:typed_data';
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 
 import 'test.dart';
 

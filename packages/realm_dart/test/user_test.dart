@@ -4,7 +4,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 
 import 'test.dart';
 

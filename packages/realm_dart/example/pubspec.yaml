@@ -7,7 +7,7 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
-  realm_dart:
+  realm_dart_vector_db:
     path: ../
 
 dev_dependencies:

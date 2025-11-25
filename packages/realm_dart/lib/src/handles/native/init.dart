@@ -48,7 +48,7 @@ String _getLibPathFlutterTest(Package realmPackage) {
 }
 
 String _getLibPathDart(Package realmDartPackage) {
-  assert(realmDartPackage.name == 'realm_dart');
+  assert(realmDartPackage.name == 'realm_dart_vector_db');
   final root = p.join(realmDartPackage.root.toFilePath(), 'binary', targetOsType.name);
   if (targetOsType.isDesktop) {
     return p.join(root, nativeLibraryName);
@@ -124,7 +124,7 @@ DynamicLibrary _openRealmLib() {
       return open(_getLibPathFlutterTest(realmPackage));
     }
     // plain dart
-    final realmDartPackage = packageConfig['realm_dart']!;
+    final realmDartPackage = packageConfig['realm_dart_vector_db']!;
     return open(_getLibPathDart(realmDartPackage));
   }
 

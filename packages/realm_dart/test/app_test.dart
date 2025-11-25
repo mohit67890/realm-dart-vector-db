@@ -7,8 +7,8 @@ import 'dart:isolate';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 import 'package:path/path.dart' as path;
-import 'package:realm_dart/realm.dart';
-import 'package:realm_dart/src/handles/realm_core.dart';
+import 'package:realm_dart_vector_db/realm.dart';
+import 'package:realm_dart_vector_db/src/handles/realm_core.dart';
 
 import 'test.dart';
 import 'utils/platform_util.dart';

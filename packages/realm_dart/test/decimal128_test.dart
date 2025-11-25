@@ -4,7 +4,7 @@
 import 'dart:math';
 
 import 'package:meta/meta.dart';
-import 'package:realm_dart/src/handles/decimal128.dart';
+import 'package:realm_dart_vector_db/src/handles/decimal128.dart';
 
 import 'test.dart';
 

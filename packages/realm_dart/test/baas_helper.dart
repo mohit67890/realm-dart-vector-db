@@ -1,14 +1,14 @@
 // Copyright 2024 MongoDB, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import 'package:realm_dart/realm.dart';
-import 'package:realm_dart/src/cli/atlas_apps/baas_client.dart';
-import 'package:realm_dart/src/handles/realm_core.dart';
+import 'package:realm_dart_vector_db/realm.dart';
+import 'package:realm_dart_vector_db/src/cli/atlas_apps/baas_client.dart';
+import 'package:realm_dart_vector_db/src/handles/realm_core.dart';
 import 'package:test/test.dart' as testing;
 
 import 'utils/platform_util.dart';
 
-export 'package:realm_dart/src/cli/atlas_apps/baas_client.dart' show AppName;
+export 'package:realm_dart_vector_db/src/cli/atlas_apps/baas_client.dart' show AppName;
 
 const String publicRSAKeyForJWTValidation = '''-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvNHHs8T0AHD7SJ+CKvVR

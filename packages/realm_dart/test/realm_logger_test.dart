@@ -5,9 +5,9 @@ import 'dart:async';
 import 'dart:isolate';
 import 'package:logging/logging.dart' hide LogRecord;
 import 'package:logging/logging.dart' as logging show LogRecord;
-import 'package:realm_dart/src/logging.dart';
-import 'package:realm_dart/src/handles/realm_core.dart';
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/src/logging.dart';
+import 'package:realm_dart_vector_db/src/handles/realm_core.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 import 'test.dart';
 
 typedef DartLogRecord = logging.LogRecord;

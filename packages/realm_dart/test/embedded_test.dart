@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 // This is required to be able to use the API for querying embedded objects.
-import 'package:realm_dart/src/realm_class.dart' show RealmInternal;
-import 'package:realm_dart/src/realm_object.dart';
+import 'package:realm_dart_vector_db/src/realm_class.dart' show RealmInternal;
+import 'package:realm_dart_vector_db/src/realm_object.dart';
 
 import 'test.dart';
 

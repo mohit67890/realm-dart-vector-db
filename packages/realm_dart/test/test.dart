@@ -8,11 +8,11 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as _path;
-import 'package:realm_dart/realm.dart';
-import 'package:realm_dart/src/configuration.dart';
-import 'package:realm_dart/src/handles/realm_core.dart';
-import 'package:realm_dart/src/logging.dart';
-import 'package:realm_dart/src/realm_object.dart';
+import 'package:realm_dart_vector_db/realm_dart_vector_db.dart';
+import 'package:realm_dart_vector_db/src/configuration.dart';
+import 'package:realm_dart_vector_db/src/handles/realm_core.dart';
+import 'package:realm_dart_vector_db/src/logging.dart';
+import 'package:realm_dart_vector_db/src/realm_object.dart';
 import 'package:test/test.dart';
 import 'package:universal_platform/universal_platform.dart';
 

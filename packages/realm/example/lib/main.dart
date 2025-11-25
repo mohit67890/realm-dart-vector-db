@@ -818,21 +818,21 @@ class _MyAppState extends State<MyApp> {
           // Read old values first (important: make a copy before clearing!)
           final old4D = List<double>.from(doc.embedding);
           print('🔍 [TEST 26] Transforming ${doc.id}: [${old4D.join(", ")}] (${old4D.length}D)');
-          
+
           // Strategy: Pad with domain-specific values (could be zeros, averages, or ML-computed)
           final new6D = [
             old4D[0], // Tech dimension (preserved)
             old4D[1], // Secondary tech (preserved)
             old4D[2], // Nature dimension (preserved)
             old4D[3], // Sports dimension (preserved)
-            0.05,     // New dimension 5 (cross-domain factor)
-            0.05,     // New dimension 6 (context factor)
+            0.05, // New dimension 5 (cross-domain factor)
+            0.05, // New dimension 6 (context factor)
           ];
-          
+
           // Now clear and add atomically
           doc.embedding.clear();
           doc.embedding.addAll(new6D);
-          
+
           print('🔍 [TEST 26]          → [${doc.embedding.join(", ")}] (${doc.embedding.length}D)');
           buffer.writeln('    - ${doc.id}: [${old4D.length}D] → [${doc.embedding.length}D]');
         }
@@ -860,7 +860,7 @@ class _MyAppState extends State<MyApp> {
       print('🔍 [TEST 26] STEP 3: Verification');
       print('🔍 [TEST 26] ─────────────────────────────────────────────────────────');
       buffer.writeln('STEP 3: Verification');
-      
+
       // Check all data preserved
       final finalDocs = realm.all<Document>();
       print('🔍 [TEST 26] Data integrity check:');
@@ -930,7 +930,7 @@ class _MyAppState extends State<MyApp> {
       print('🔍 [TEST 26] 4. Safe pattern: Remove → Transform → Recreate');
       print('🔍 [TEST 26] 5. Production-safe alternative to shouldDeleteIfMigrationNeeded');
       print('🔍 [TEST 26] ═════════════════════════════════════════════════════════\n');
-      
+
       buffer.writeln('━━━ TEST 26 SUMMARY ━━━');
       buffer.writeln('✓ Migration completed successfully!');
       buffer.writeln('✓ Zero data loss (5 docs → 5 docs)');
