@@ -25,7 +25,7 @@ ABIS=(x86_64 armeabi-v7a arm64-v8a)
 
 # only building for arm64-v8a if no arguments
 if [ $# -eq 0 ]; then
-    ABIS=arm64-v8a)
+    ABIS=(arm64-v8a)
 fi
 
 for abi in "${ABIS[@]}"; do
