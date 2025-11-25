@@ -20,9 +20,10 @@ This repository holds the source code for the Realm SDK for Flutter™ and Dart�
 ## Features
 
 * **Mobile-first:** Realm is the first database built from the ground up to run directly inside phones, tablets, and wearables.
-* **Simple:** Realm’s object-oriented data model is simple to learn, doesn’t need an ORM, and the [API](https://pub.dev/documentation/realm/latest/) lets you write less code to get apps up & running in minutes.
+* **Simple:** Realm's object-oriented data model is simple to learn, doesn't need an ORM, and the [API](https://pub.dev/documentation/realm/latest/) lets you write less code to get apps up & running in minutes.
 * **Modern:** Realm supports latest Dart and Flutter versions and is built with sound null-safety.
 * **Fast:** Realm is faster than even raw SQLite on common operations while maintaining an extremely rich feature set.
+* **Vector Search (HNSW):** Built-in support for high-performance vector similarity search using Hierarchical Navigable Small World (HNSW) algorithm. Perfect for AI/ML applications, semantic search, recommendation systems, and RAG (Retrieval-Augmented Generation) patterns.
 * **[MongoDB Atlas Device Sync](https://www.mongodb.com/docs/atlas/app-services/sync/)**: Makes it simple to keep data in sync across users, devices, and your backend in real-time. Get started for free with [a template application](https://github.com/mongodb/template-app-dart-flutter-todo) and [create the cloud backend](https://mongodb.com/realm/register?utm_medium=github_atlas_CTA&utm_source=realm_dart_github).
 
 ## Getting Started
@@ -83,6 +84,154 @@ This repository holds the source code for the Realm SDK for Flutter™ and Dart�
     });
     realm.write(() => realm.add(Car('VW', 'Polo', kilometers: 22000)));
     ```
+
+## Vector Search with HNSW
+
+Realm now supports high-performance vector similarity search using the Hierarchical Navigable Small World (HNSW) algorithm. This enables AI/ML applications including semantic search, recommendation systems, image similarity, and RAG (Retrieval-Augmented Generation) patterns.
+
+### Quick Start with Vector Search
+
+* Define a model with vector embeddings:
+
+    ```dart
+    import 'package:realm/realm.dart';
+
+    part 'app.realm.dart';
+
+    @RealmModel()
+    class _Document {
+      @PrimaryKey()
+      late String id;
+      
+      late String title;
+      late String content;
+      late List<double> embedding;  // Vector embeddings
+    }
+    ```
+
+* Generate the RealmObject class:
+
+    ```
+    dart run realm generate
+    ```
+
+* Create a vector index and perform similarity search:
+
+    ```dart
+    var config = Configuration.local([Document.schema]);
+    var realm = Realm(config);
+
+    // Create HNSW vector index
+    realm.write(() {
+      realm.createVectorIndex<Document>(
+        'embedding',
+        metric: VectorDistanceMetric.cosine,  // or euclidean, dotProduct
+        m: 16,                                // connections per layer (default: 16)
+        efConstruction: 200,                  // build quality (default: 200)
+      );
+    });
+
+    // Add documents with embeddings
+    realm.write(() {
+      realm.add(Document(
+        '1', 
+        'AI Technology', 
+        'Machine learning and neural networks',
+        embedding: [0.95, 0.85, 0.05, 0.10, 0.02, 0.08],
+      ));
+      realm.add(Document(
+        '2',
+        'Nature Guide',
+        'Forest ecosystems and wildlife',
+        embedding: [0.08, 0.12, 0.95, 0.88, 0.02, 0.05],
+      ));
+    });
+
+    // K-Nearest Neighbors (KNN) search
+    final queryVector = [0.9, 0.8, 0.1, 0.1, 0.05, 0.05];
+    final results = realm.vectorSearchKnn<Document>(
+      'embedding',
+      queryVector: queryVector,
+      k: 5,  // Return top 5 similar documents
+    );
+
+    for (var result in results) {
+      print('${result.object.title}: distance=${result.distance}');
+    }
+
+    // Radius search (all documents within distance threshold)
+    final radiusResults = realm.vectorSearchRadius<Document>(
+      'embedding',
+      queryVector: queryVector,
+      maxDistance: 0.5,
+    );
+    ```
+
+### Vector Search Features
+
+* **Distance Metrics**:
+  - `VectorDistanceMetric.cosine` - Cosine similarity (recommended for normalized vectors)
+  - `VectorDistanceMetric.euclidean` - Euclidean distance
+  - `VectorDistanceMetric.dotProduct` - Dot product similarity
+
+* **Search Types**:
+  - **KNN Search**: Find K nearest neighbors (`vectorSearchKnn`)
+  - **Radius Search**: Find all vectors within distance threshold (`vectorSearchRadius`)
+
+* **Index Management**:
+  - `createVectorIndex()` - Create HNSW index on vector property
+  - `removeVectorIndex()` - Remove index (preserves data)
+  - `hasVectorIndex()` - Check if index exists
+  - `getVectorIndexStats()` - Get index statistics (numVectors, maxLayer)
+
+* **Tuning Parameters**:
+  - `m` (default: 16) - Number of bi-directional links per node. Higher values = better recall, more memory
+  - `efConstruction` (default: 200) - Build-time quality parameter. Higher values = better index quality, slower indexing
+
+### Production Migration Pattern
+
+When changing vector dimensions (e.g., 4D → 6D), use this safe migration pattern:
+
+```dart
+realm.write(() {
+  // 1. Remove existing index (data is preserved!)
+  if (realm.hasVectorIndex<Document>('embedding')) {
+    realm.removeVectorIndex<Document>('embedding');
+  }
+  
+  // 2. Transform embeddings
+  for (final doc in realm.all<Document>()) {
+    final oldValues = List<double>.from(doc.embedding);  // Create defensive copy
+    final newValues = [...oldValues, 0.0, 0.0];          // Add new dimensions
+    doc.embedding.clear();
+    doc.embedding.addAll(newValues);
+  }
+  
+  // 3. Create new index with updated dimensions
+  realm.createVectorIndex<Document>(
+    'embedding',
+    metric: VectorDistanceMetric.cosine,
+    m: 16,
+    efConstruction: 200,
+  );
+});
+```
+
+**Key points:**
+- `removeVectorIndex()` does NOT delete your data
+- Always create a defensive copy with `List<double>.from()` before modifying
+- This pattern avoids data loss unlike `shouldDeleteIfMigrationNeeded: true`
+
+### Use Cases
+
+* **Semantic Search**: Find documents by meaning, not just keywords
+* **Recommendation Systems**: Suggest similar items based on embeddings
+* **Image Similarity**: Find visually similar images using vision model embeddings
+* **RAG Applications**: Retrieve relevant context for AI chatbots and assistants
+* **Duplicate Detection**: Find near-duplicate content
+* **Clustering & Classification**: Group similar items together
+
+For a complete example with 26 comprehensive tests, see [example/lib/main.dart](./example/lib/main.dart).
 
 ## Samples
 

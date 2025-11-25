@@ -3,7 +3,8 @@
 
 // Import native implementation to get vector search methods
 import 'handles/native/realm_bindings.dart' show realm_hnsw_distance_metric;
-import 'handles/native/realm_handle.dart' as native_handle show RealmHandle, NativeVectorSearchResult;
+import 'handles/native/realm_handle.dart' as native_handle show RealmHandle;
+import 'handles/native/vector_search_handle.dart' show RealmHandleVectorSearch;
 import 'realm_class.dart';
 import 'realm_object.dart';
 

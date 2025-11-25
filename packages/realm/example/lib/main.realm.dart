@@ -178,3 +178,97 @@ class Person extends _Person with RealmEntity, RealmObjectBase, RealmObject {
   @override
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
+
+class Document extends _Document
+    with RealmEntity, RealmObjectBase, RealmObject {
+  Document(
+    String id,
+    String title,
+    String content, {
+    Iterable<double> embedding = const [],
+  }) {
+    RealmObjectBase.set(this, 'id', id);
+    RealmObjectBase.set(this, 'title', title);
+    RealmObjectBase.set(this, 'content', content);
+    RealmObjectBase.set<RealmList<double>>(
+        this, 'embedding', RealmList<double>(embedding));
+  }
+
+  Document._();
+
+  @override
+  String get id => RealmObjectBase.get<String>(this, 'id') as String;
+  @override
+  set id(String value) => RealmObjectBase.set(this, 'id', value);
+
+  @override
+  String get title => RealmObjectBase.get<String>(this, 'title') as String;
+  @override
+  set title(String value) => RealmObjectBase.set(this, 'title', value);
+
+  @override
+  String get content => RealmObjectBase.get<String>(this, 'content') as String;
+  @override
+  set content(String value) => RealmObjectBase.set(this, 'content', value);
+
+  @override
+  RealmList<double> get embedding =>
+      RealmObjectBase.get<double>(this, 'embedding') as RealmList<double>;
+  @override
+  set embedding(covariant RealmList<double> value) =>
+      throw RealmUnsupportedSetError();
+
+  @override
+  Stream<RealmObjectChanges<Document>> get changes =>
+      RealmObjectBase.getChanges<Document>(this);
+
+  @override
+  Stream<RealmObjectChanges<Document>> changesFor([List<String>? keyPaths]) =>
+      RealmObjectBase.getChangesFor<Document>(this, keyPaths);
+
+  @override
+  Document freeze() => RealmObjectBase.freezeObject<Document>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      'id': id.toEJson(),
+      'title': title.toEJson(),
+      'content': content.toEJson(),
+      'embedding': embedding.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(Document value) => value.toEJson();
+  static Document _fromEJson(EJsonValue ejson) {
+    if (ejson is! Map<String, dynamic>) return raiseInvalidEJson(ejson);
+    return switch (ejson) {
+      {
+        'id': EJsonValue id,
+        'title': EJsonValue title,
+        'content': EJsonValue content,
+      } =>
+        Document(
+          fromEJson(id),
+          fromEJson(title),
+          fromEJson(content),
+          embedding: fromEJson(ejson['embedding']),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(Document._);
+    register(_toEJson, _fromEJson);
+    return const SchemaObject(ObjectType.realmObject, Document, 'Document', [
+      SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
+      SchemaProperty('title', RealmPropertyType.string),
+      SchemaProperty('content', RealmPropertyType.string),
+      SchemaProperty('embedding', RealmPropertyType.double,
+          collectionType: RealmCollectionType.list),
+    ]);
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}
