@@ -6,7 +6,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:realm/realm.dart';
+import 'package:realm_vector_db/realm.dart';
 
 part 'main.realm.dart';
 

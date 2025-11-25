@@ -3,7 +3,7 @@
 
 import 'dart:ffi';
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 
 import 'error_handling.dart';
 import 'realm_library.dart';

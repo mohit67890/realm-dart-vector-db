@@ -4,7 +4,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'package:realm_dart/src/logging.dart';
+import 'package:realm_dart_vector_db/src/logging.dart';
 
 import 'handles/scheduler_handle.dart';
 import 'realm_class.dart';

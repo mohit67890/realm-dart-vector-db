@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:realm_common/realm_common.dart' hide Decimal128;
-import 'package:realm_dart/src/handles/native/from_native.dart';
+import 'package:realm_dart_vector_db/src/handles/native/from_native.dart';
 
 import '../../realm_object.dart';
 import 'decimal128.dart';

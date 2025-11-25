@@ -1,7 +1,7 @@
 // Copyright 2024 MongoDB, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import 'package:realm_dart/realm.dart';
+import 'package:realm_dart_vector_db/realm.dart';
 
 import 'native/realm_core.dart' if (dart.library.js_interop) 'web/realm_core.dart' as impl;
 

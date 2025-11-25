@@ -1,3 +1,24 @@
+## 1.0.0 (2025-11-25)
+
+### Initial Release - realm_dart_vector_db
+* Built-in HNSW (Hierarchical Navigable Small World) vector search support
+* High-performance vector similarity search (~10K searches/sec with 102μs average latency)
+* Support for multiple distance metrics: Cosine, Euclidean, Dot Product
+* Configurable HNSW parameters (m, efConstruction) for performance tuning
+* Radius search for finding all vectors within a distance threshold
+* Filtered search combining vector similarity with predicate filtering
+* Comprehensive benchmark suite with 10 performance tests
+* Index creation time: 125ms for 100 items (1024D embeddings)
+* Memory overhead: 100% of original data size
+* Perfect for AI/ML applications, semantic search, RAG patterns, and recommendation systems
+* Based on Realm SDK 3.5.0 with vector search enhancements
+* Pure Dart implementation (no Flutter required)
+
+### Compatibility
+* Dart SDK: ^3.6.0
+
+---
+
 ## vNext (TBD)
 
 ### Enhancements

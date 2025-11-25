@@ -3,7 +3,7 @@
 
 import 'package:decimal/decimal.dart';
 
-import 'package:realm_dart/src/convert.dart';
+import 'package:realm_dart_vector_db/src/convert.dart';
 
 import 'web_not_supported.dart';
 

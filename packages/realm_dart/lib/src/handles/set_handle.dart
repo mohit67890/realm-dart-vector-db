@@ -1,7 +1,7 @@
 // Copyright 2024 MongoDB, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import 'package:realm_dart/src/handles/handle_base.dart';
+import 'package:realm_dart_vector_db/src/handles/handle_base.dart';
 
 import '../realm_class.dart';
 import 'notification_token_handle.dart';
