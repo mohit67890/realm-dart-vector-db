@@ -111,6 +111,7 @@ export 'session.dart' show ConnectionStateChange, SyncProgress, ProgressDirectio
 export 'set.dart' show RealmSet, RealmSetChanges, RealmSetOfObject;
 export 'subscription.dart' show Subscription, SubscriptionSet, SubscriptionSetState, MutableSubscriptionSet;
 export 'user.dart' show User, UserState, ApiKeyClient, UserIdentity, ApiKey, FunctionsClient, UserChanges;
+export 'vector_search.dart' show VectorDistanceMetric, VectorSearchResult, VectorIndexStats, VectorSearchExtension;
 
 /// A [Realm] instance represents a `Realm` database.
 ///
@@ -180,26 +181,30 @@ class Realm {
     }
 
     final asyncOpenHandle = AsyncOpenTaskHandle.from(config);
-    return await CancellableFuture.from<Realm>(() async {
-      if (cancellationToken != null && cancellationToken.isCancelled) {
-        throw cancellationToken.exception!;
-      }
+    return await CancellableFuture.from<Realm>(
+      () async {
+        if (cancellationToken != null && cancellationToken.isCancelled) {
+          throw cancellationToken.exception!;
+        }
 
-      StreamSubscription<SyncProgress>? progressSubscription;
-      if (onProgressCallback != null) {
-        final progressController = RealmAsyncOpenProgressNotificationsController._(asyncOpenHandle);
-        final progressStream = progressController.createStream();
-        progressSubscription = progressStream.listen(onProgressCallback);
-      }
+        StreamSubscription<SyncProgress>? progressSubscription;
+        if (onProgressCallback != null) {
+          final progressController = RealmAsyncOpenProgressNotificationsController._(asyncOpenHandle);
+          final progressStream = progressController.createStream();
+          progressSubscription = progressStream.listen(onProgressCallback);
+        }
 
-      late final RealmHandle realmHandle;
-      try {
-        realmHandle = await asyncOpenHandle.openAsync(cancellationToken);
-        return Realm._(config, realmHandle);
-      } finally {
-        await progressSubscription?.cancel();
-      }
-    }, cancellationToken, onCancel: () => asyncOpenHandle.cancel());
+        late final RealmHandle realmHandle;
+        try {
+          realmHandle = await asyncOpenHandle.openAsync(cancellationToken);
+          return Realm._(config, realmHandle);
+        } finally {
+          await progressSubscription?.cancel();
+        }
+      },
+      cancellationToken,
+      onCancel: () => asyncOpenHandle.cancel(),
+    );
   }
 
   static RealmHandle _openRealm(Configuration config) {
@@ -431,11 +436,7 @@ class Realm {
   /// and [Predicate Programming Guide.](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Predicates/AdditionalChapters/Introduction.html#//apple_ref/doc/uid/TP40001789)
   RealmResults<T> query<T extends RealmObject>(String query, [List<Object?> args = const []]) {
     final metadata = _metadata.getByType(T);
-    return RealmResultsInternal.create<T>(
-      _handle.queryClass(metadata.classKey, query, args),
-      this,
-      metadata,
-    );
+    return RealmResultsInternal.create<T>(_handle.queryClass(metadata.classKey, query, args), this, metadata);
   }
 
   /// Deletes all [RealmObject]s of type `T` in the `Realm`
@@ -603,11 +604,12 @@ class Realm {
   Stream<RealmSchemaChanges> get _schemaChanges {
     late StreamController<RealmSchemaChanges> controller;
     controller = StreamController<RealmSchemaChanges>(
-        onListen: () => _schemaChangeListeners.add(controller),
-        onPause: () => _schemaChangeListeners.remove(controller),
-        onResume: () => _schemaChangeListeners.add(controller),
-        onCancel: () => _schemaChangeListeners.remove(controller),
-        sync: true);
+      onListen: () => _schemaChangeListeners.add(controller),
+      onPause: () => _schemaChangeListeners.remove(controller),
+      onResume: () => _schemaChangeListeners.add(controller),
+      onCancel: () => _schemaChangeListeners.remove(controller),
+      sync: true,
+    );
     return controller.stream;
   }
 

@@ -28,6 +28,14 @@ import 'subscription_set_handle.dart';
 
 import '../realm_handle.dart' as intf;
 
+/// Result of a vector search operation at the native level.
+class NativeVectorSearchResult {
+  final ObjectHandle objectHandle;
+  final double distance;
+
+  NativeVectorSearchResult(this.objectHandle, this.distance);
+}
+
 class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
   int _counter = 0;
 
@@ -45,9 +53,11 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
 
     final configHandle = ConfigHandle.from(config);
 
-    return RealmHandle(realmLib
-        .realm_open(configHandle.pointer) //
-        .raiseLastErrorIfNull());
+    return RealmHandle(
+      realmLib
+          .realm_open(configHandle.pointer) //
+          .raiseLastErrorIfNull(),
+    );
   }
 
   @override
@@ -94,15 +104,7 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
     return using((arena) {
       final realmValue = primaryKey.toNative(arena);
       final didCreate = arena<Bool>();
-      return ObjectHandle(
-        realmLib.realm_object_get_or_create_with_primary_key(
-          pointer,
-          classKey,
-          realmValue.ref,
-          didCreate,
-        ),
-        this,
-      );
+      return ObjectHandle(realmLib.realm_object_get_or_create_with_primary_key(pointer, classKey, realmValue.ref, didCreate), this);
     });
   }
 
@@ -129,16 +131,7 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
       for (var i = 0; i < length; ++i) {
         intoRealmQueryArg(args[i], argsPointer + i, arena);
       }
-      final queryHandle = QueryHandle(
-        realmLib.realm_query_parse(
-          pointer,
-          classKey,
-          query.toCharPtr(arena),
-          length,
-          argsPointer,
-        ),
-        this,
-      );
+      final queryHandle = QueryHandle(realmLib.realm_query_parse(pointer, classKey, query.toCharPtr(arena), length, argsPointer), this);
       return queryHandle.findAll();
     });
   }
@@ -189,11 +182,14 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
   @override
   Future<void> beginWriteAsync(CancellationToken? ct) {
     int? id;
-    final completer = CancellableCompleter<void>(ct, onCancel: () {
-      if (id != null) {
-        _cancelAsync(id!);
-      }
-    });
+    final completer = CancellableCompleter<void>(
+      ct,
+      onCancel: () {
+        if (id != null) {
+          _cancelAsync(id!);
+        }
+      },
+    );
     if (ct?.isCancelled != true) {
       using((arena) {
         final transactionId = arena<UnsignedInt>();
@@ -216,11 +212,14 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
   @override
   Future<void> commitWriteAsync(CancellationToken? ct) {
     int? id;
-    final completer = CancellableCompleter<void>(ct, onCancel: () {
-      if (id != null) {
-        _cancelAsync(id!);
-      }
-    });
+    final completer = CancellableCompleter<void>(
+      ct,
+      onCancel: () {
+        if (id != null) {
+          _cancelAsync(id!);
+        }
+      },
+    );
     if (ct?.isCancelled != true) {
       using((arena) {
         final transactionId = arena<UnsignedInt>();
@@ -332,13 +331,7 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
   void renameProperty(String objectType, String oldName, String newName, covariant SchemaHandle schema) {
     using((arena) {
       realmLib
-          .realm_schema_rename_property(
-            pointer,
-            schema.pointer,
-            objectType.toCharPtr(arena),
-            oldName.toCharPtr(arena),
-            newName.toCharPtr(arena),
-          )
+          .realm_schema_rename_property(pointer, schema.pointer, objectType.toCharPtr(arena), oldName.toCharPtr(arena), newName.toCharPtr(arena))
           .raiseLastErrorIfFalse();
     });
   }
@@ -393,8 +386,10 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
       realmLib.realm_get_class(pointer, classKey, classInfo).raiseLastErrorIfFalse();
 
       final name = classInfo.ref.name.cast<Utf8>().toDartString();
-      final baseType = ObjectType.values.firstWhere((element) => element.flags == classInfo.ref.flags,
-          orElse: () => throw RealmError('No object type found for flags ${classInfo.ref.flags}'));
+      final baseType = ObjectType.values.firstWhere(
+        (element) => element.flags == classInfo.ref.flags,
+        orElse: () => throw RealmError('No object type found for flags ${classInfo.ref.flags}'),
+      );
       final schema = _getSchemaForClassKey(classKey, name, baseType, arena, expectedSize: classInfo.ref.num_properties + classInfo.ref.num_computed_properties);
       schemas.add(schema);
     }
@@ -470,8 +465,15 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
       final linkOriginProperty = property.ref.link_origin_property_name.cast<Utf8>().toRealmDartString(treatEmptyAsNull: true);
       final isNullable = property.ref.flags & realm_property_flags.RLM_PROPERTY_NULLABLE.value != 0;
       final isPrimaryKey = propertyName == primaryKeyName;
-      final propertyMeta = RealmPropertyMetadata(property.ref.key, objectType, linkOriginProperty, RealmPropertyType.values.elementAt(property.ref.type.value),
-          isNullable, isPrimaryKey, RealmCollectionType.values.elementAt(property.ref.collection_type.value));
+      final propertyMeta = RealmPropertyMetadata(
+        property.ref.key,
+        objectType,
+        linkOriginProperty,
+        RealmPropertyType.values.elementAt(property.ref.type.value),
+        isNullable,
+        isPrimaryKey,
+        RealmCollectionType.values.elementAt(property.ref.collection_type.value),
+      );
       result[propertyName] = propertyMeta;
     }
     return result;
@@ -499,6 +501,121 @@ class RealmHandle extends HandleBase<shared_realm> implements intf.RealmHandle {
 
   @override
   void verifyKeyPath(List<String>? keyPaths, int? classKey) => buildAndVerifyKeyPath(keyPaths, classKey);
+
+  /// Performs KNN vector search at the native level.
+  List<NativeVectorSearchResult> vectorSearchKnn({
+    required int classKey,
+    required int propertyKey,
+    required List<double> queryVector,
+    required int k,
+    int efSearch = 50,
+  }) {
+    return using((arena) {
+      final queryPtr = arena<Double>(queryVector.length);
+      for (var i = 0; i < queryVector.length; i++) {
+        queryPtr[i] = queryVector[i];
+      }
+
+      final resultsPtr = arena<realm_hnsw_search_result_t>(k);
+      final numResultsPtr = arena<Size>();
+
+      realmLib
+          .realm_hnsw_search_knn(pointer.cast<realm_t>(), classKey, propertyKey, queryPtr, queryVector.length, k, efSearch, resultsPtr, numResultsPtr)
+          .raiseLastErrorIfFalse();
+
+      final numResults = numResultsPtr.value;
+      final results = <NativeVectorSearchResult>[];
+
+      for (var i = 0; i < numResults; i++) {
+        final result = resultsPtr[i];
+        final objHandle = getObject(classKey, result.object_key);
+        results.add(NativeVectorSearchResult(objHandle, result.distance));
+      }
+
+      return results;
+    });
+  }
+
+  /// Performs radius-based vector search at the native level.
+  List<NativeVectorSearchResult> vectorSearchRadius({
+    required int classKey,
+    required int propertyKey,
+    required List<double> queryVector,
+    required double maxDistance,
+    int maxResults = 100,
+  }) {
+    return using((arena) {
+      final queryPtr = arena<Double>(queryVector.length);
+      for (var i = 0; i < queryVector.length; i++) {
+        queryPtr[i] = queryVector[i];
+      }
+
+      final resultsPtr = arena<realm_hnsw_search_result_t>(maxResults);
+      final numResultsPtr = arena<Size>();
+
+      realmLib
+          .realm_hnsw_search_radius(
+            pointer.cast<realm_t>(),
+            classKey,
+            propertyKey,
+            queryPtr,
+            queryVector.length,
+            maxDistance,
+            resultsPtr,
+            maxResults,
+            numResultsPtr,
+          )
+          .raiseLastErrorIfFalse();
+
+      final numResults = numResultsPtr.value;
+      final results = <NativeVectorSearchResult>[];
+
+      for (var i = 0; i < numResults; i++) {
+        final result = resultsPtr[i];
+        final objHandle = getObject(classKey, result.object_key);
+        results.add(NativeVectorSearchResult(objHandle, result.distance));
+      }
+
+      return results;
+    });
+  }
+
+  /// Gets statistics about the vector index.
+  ({int numVectors, int maxLayer})? getVectorIndexStats({required int classKey, required int propertyKey}) {
+    return using((arena) {
+      final numVectorsPtr = arena<Size>();
+      final maxLayerPtr = arena<Int>();
+
+      final success = realmLib.realm_hnsw_get_stats(pointer.cast<realm_t>(), classKey, propertyKey, numVectorsPtr, maxLayerPtr);
+
+      if (!success) {
+        return null;
+      }
+
+      return (numVectors: numVectorsPtr.value, maxLayer: maxLayerPtr.value);
+    });
+  }
+
+  /// Checks if a vector index exists on the property.
+  bool hasVectorIndex({required int classKey, required int propertyKey}) {
+    return using((arena) {
+      final hasIndexPtr = arena<Bool>();
+
+      final success = realmLib.realm_hnsw_has_index(pointer.cast<realm_t>(), classKey, propertyKey, hasIndexPtr);
+
+      return success && hasIndexPtr.value;
+    });
+  }
+
+  /// Creates an HNSW vector index on the property.
+  void createVectorIndex({required int classKey, required int propertyKey, required realm_hnsw_distance_metric metric, int m = 16, int efConstruction = 200}) {
+    realmLib.realm_hnsw_create_index(pointer.cast<realm_t>(), classKey, propertyKey, m, efConstruction, metric).raiseLastErrorIfFalse();
+  }
+
+  /// Removes an HNSW vector index from the property.
+  void removeVectorIndex({required int classKey, required int propertyKey}) {
+    realmLib.realm_hnsw_remove_index(pointer.cast<realm_t>(), classKey, propertyKey).raiseLastErrorIfFalse();
+  }
 }
 
 class CallbackTokenHandle extends RootedHandleBase<realm_callback_token> implements intf.CallbackTokenHandle {
