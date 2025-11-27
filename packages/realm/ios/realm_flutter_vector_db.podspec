@@ -38,14 +38,8 @@ Pod::Spec.new do |s|
 
   s.swift_version             = '5.0'
   s.pod_target_xcconfig       = { 'DEFINES_MODULE' => 'YES' }
-                                #Use --debug to debug the install command on both prepare_command and script_phase below
-  s.prepare_command           = "source \"#{project_dir}/Flutter/flutter_export_environment.sh\" && cd \"$FLUTTER_APPLICATION_PATH\" && \"$FLUTTER_ROOT/bin/dart\" run realm_flutter_vector_db install --target-os-type ios"
+  # Binaries are vendored via `realm_dart.xcframework`; skip runtime downloads.
   s.script_phases             = [
-                                  { :name => 'Download Realm Flutter iOS Binaries',
-                                  #Use --debug to debug the install command
-                                  :script => 'source "$PROJECT_DIR/../Flutter/flutter_export_environment.sh" && cd "$FLUTTER_APPLICATION_PATH" && "$FLUTTER_ROOT/bin/dart" run realm_flutter_vector_db install --target-os-type ios',
-                                    :execution_position => :before_headers
-                                  },
                                   { :name => 'Report Metrics',
                                     :script => 'source "$PROJECT_DIR/../Flutter/flutter_export_environment.sh" && cd "$FLUTTER_APPLICATION_PATH" && "$FLUTTER_ROOT/bin/dart" run realm_flutter_vector_db metrics --flutter-root "$FLUTTER_ROOT" --target-os-type ios --target-os-version "$IPHONEOS_DEPLOYMENT_TARGET"',
                                     :execution_position => :before_compile
