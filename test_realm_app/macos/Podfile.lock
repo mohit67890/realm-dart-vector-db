@@ -1,0 +1,22 @@
+PODS:
+  - FlutterMacOS (1.0.0)
+  - realm_flutter_vector_db (3.5.0):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - realm_flutter_vector_db (from `Flutter/ephemeral/.symlinks/plugins/realm_flutter_vector_db/macos`)
+
+EXTERNAL SOURCES:
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  realm_flutter_vector_db:
+    :path: Flutter/ephemeral/.symlinks/plugins/realm_flutter_vector_db/macos
+
+SPEC CHECKSUMS:
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  realm_flutter_vector_db: 0fca3fc64e573c4f21202a0600fca4a19f7a5dd9
+
+PODFILE CHECKSUM: 7eb978b976557c8c1cd717d8185ec483fd090a82
+
+COCOAPODS: 1.16.2

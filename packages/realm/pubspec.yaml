@@ -1,6 +1,6 @@
 name: realm_flutter_vector_db
 description: Realm Flutter SDK with built-in HNSW vector search - a mobile database alternative with AI/ML vector similarity search capabilities for semantic search.
-version: 1.0.3
+version: 1.0.10
 
 homepage: https://github.com/mohit67890/realm-dart-vector-db
 repository: https://github.com/mohit67890/realm-dart-vector-db
@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
   # realm_dart_vector_db:
   #   path: ../realm_dart
-  realm_dart_vector_db: ^1.0.1
+  realm_dart_vector_db: ^1.0.9
 
 flutter:
   plugin:

@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - realm_flutter_vector_db (3.5.0):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - realm_flutter_vector_db (from `.symlinks/plugins/realm_flutter_vector_db/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  realm_flutter_vector_db:
+    :path: ".symlinks/plugins/realm_flutter_vector_db/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  realm_flutter_vector_db: 6b1a085a88fd7a20c0c26f6670173c7a9b14f754
+
+PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
+
+COCOAPODS: 1.16.2

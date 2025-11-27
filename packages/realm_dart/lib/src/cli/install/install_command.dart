@@ -146,12 +146,16 @@ class InstallCommand extends Command<void> {
     }
 
     final realmPackagePath = await getPackagePath(flavorName);
-    final realmPubspec = parsePubspec(File(path.join(realmPackagePath.path, "pubspec.yaml")));
+
+    // Always get the realm_dart_vector_db version for binary downloads
+    // (binaries are hosted under realm_dart_vector_db versions, not realm_flutter_vector_db)
+    final realmDartPackagePath = await getPackagePath('realm_dart_vector_db');
+    final realmDartPubspec = parsePubspec(File(path.join(realmDartPackagePath.path, "pubspec.yaml")));
 
     final binaryPath = getBinaryPath(realmPackagePath, flavor);
     print(binaryPath);
     final archiveName = '${targetOsType.name}.tar.gz';
-    await downloadAndExtractBinaries(binaryPath, realmPubspec.version!, archiveName);
+    await downloadAndExtractBinaries(binaryPath, realmDartPubspec.version!, archiveName);
 
     print('Realm install command finished.');
   }

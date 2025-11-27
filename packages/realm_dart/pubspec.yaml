@@ -1,6 +1,6 @@
 name: realm_dart_vector_db
 description: Realm Dart SDK with built-in HNSW vector search - a mobile database alternative to SQLite with AI/ML vector similarity search capabilities for semantic search, RAG, and recommendation systems.
-version: 1.0.5
+version: 1.0.9
 
 homepage: https://github.com/mohit67890/realm-dart-vector-db
 repository: https://github.com/mohit67890/realm-dart-vector-db

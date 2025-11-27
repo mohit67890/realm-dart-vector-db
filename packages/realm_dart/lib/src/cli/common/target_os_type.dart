@@ -20,7 +20,7 @@ enum Flavor {
 }
 
 extension FlavorEx on Flavor {
-  String get packageName => switch (this) { Flavor.dart => 'realm_dart', Flavor.flutter => 'realm' };
+  String get packageName => switch (this) { Flavor.dart => 'realm_dart_vector_db', Flavor.flutter => 'realm_flutter_vector_db' };
 }
 
 extension StringEx on String {

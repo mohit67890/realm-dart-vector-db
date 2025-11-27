@@ -81,7 +81,13 @@ Future<void> uploadMetrics(Options options) async {
   var frameworkName = flutterInfo != null ? 'Flutter' : null;
 
   Dependency? realmDep;
-  if (pubspec.dependencies.containsKey('realm')) {
+  if (pubspec.dependencies.containsKey('realm_flutter_vector_db')) {
+    realmDep = pubspec.dependencies["realm_flutter_vector_db"];
+    frameworkName = frameworkName ?? "Flutter";
+  } else if (pubspec.dependencies.containsKey('realm_dart_vector_db')) {
+    realmDep = pubspec.dependencies["realm_dart_vector_db"];
+    frameworkName = frameworkName ?? "Dart";
+  } else if (pubspec.dependencies.containsKey('realm')) {
     realmDep = pubspec.dependencies["realm"];
     frameworkName = frameworkName ?? "Flutter";
   } else if (pubspec.dependencies.containsKey('realm_dart')) {
