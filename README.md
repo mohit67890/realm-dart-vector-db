@@ -49,7 +49,7 @@ This repository holds the source code for the Realm SDK for Flutterâ„¢ and Dartâ
 - Generate RealmObject class `Car` from data model class `_Car`.
 
   ```
-  dart run realm generate
+  dart run realm_flutter_vector_db generate
   ```
 
 - Open a Realm and add some objects.
@@ -113,7 +113,7 @@ Realm now supports high-performance vector similarity search using the Hierarchi
 - Generate the RealmObject class:
 
   ```
-  dart run realm generate
+  dart run realm_flutter_vector_db generate
   ```
 
 - Create a vector index and perform similarity search:
@@ -308,13 +308,13 @@ Realm Flutter package is published to [realm](https://pub.dev/packages/realm).
 - Add `realm` package to a Flutter application.
 
   ```
-  flutter pub add realm
+  flutter pub add realm_flutter_vector_db
   ```
 
 - For running Flutter widget and unit tests run the following command to install the required native binaries.
 
   ```
-  dart run realm install
+  dart run realm_flutter_vector_db install
   ```
 
 - Import Realm in a dart file (ex. `catalog.dart`).
@@ -349,10 +349,10 @@ Realm Flutter package is published to [realm](https://pub.dev/packages/realm).
 
 - Generate RealmObject class `Item` from data model class `_Item`.
 
-  _*On Flutter use `dart run realm` to run `realm` package commands*_
+  _*On Flutter use `dart run realm_flutter_vector_db` to run `realm_flutter_vector_db` package commands*_
 
   ```
-  dart run realm generate
+  dart run realm_flutter_vector_db generate
   ```
 
   A new file `catalog.realm.dart` will be created next to the `catalog.dart`.

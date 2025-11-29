@@ -8,6 +8,7 @@ pubspec.lock
 .flutter-plugins-dependencies
 build/
 release/
+test_realm_app/
 
 # melos
 .idea/
